@@ -1,0 +1,61 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Write a function that:
+
+1 . Takes data frame, row selection and column selection as arguments
+
+2. Subsets data according to the given selections. Possible selections are:
+
+  By index/indexes
+
+  By name/names
+
+  By logical vector
+
+3. For each column of the subsetted data performs some computations:
+
+  For numeric data – any of sum(), mean(), sd(), etc. As you wish
+
+  For non-numeric data (characters and logical vectors, factors) – frequency table
+
+4. Returns an output as a data frame and calculation results as a list
+
+```{r}
+subset_df <- function(df, row_selection, column_selection){
+  
+  column_func <- function(x){
+    if (is.numeric(x)){
+      return(mean(x))
+    } else {
+      return(table(x))
+    }
+  }
+  
+  df_subs <- df[row_selection, column_selection, drop=F]
+  d <- sapply(df_subs, column_func)
+  
+  return (list(df_subs, d))
+}
+```
+
+Apply it in a few examples:
+
+```{r}
+library("datasets")
+df <- mtcars
+l <- subset_df(df, c(1,2,3), c(T, F))
+l[[1]]
+l[[2]]
+```
+```{r}
+library("ggplot2")
+df <- presidential
+l <- subset_df(df, 1:10, c("name", "start", 'end'))
+l[[1]]
+l[[2]]
+```
+
+
