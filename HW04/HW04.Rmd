@@ -1,0 +1,104 @@
+---
+title: "HW04"
+author: "Anton Zamyatin"
+date: "4/10/2019"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exploring data
+```{r}
+
+raw <- readRDS('weather.rds', refhook = NULL)
+
+summary(raw) 
+head(raw)
+str(raw)
+```
+We noticed some issues:
+1) "X" collumn is just an index
+2) We must assign our samples as Year+month+day from X# columns
+3) Divide mesure column into multiple columns
+
+```{r}
+# package include
+library(tidyr)
+library(stringr)
+# get rid of X column
+tidy <- raw[,-1]
+
+# From wide to long
+tidy <- gather(tidy, day, value, X1:X31)
+# From long to wide
+tidy <- spread(tidy, measure, value)
+
+```
+
+Next we recognised that some samples have all NAs data because of unexisting days and the end of the mesaures in the end of the table.
+
+```{r}
+tidy$day <- str_sub(tidy$day, 2, 3)
+tidy <- unite(tidy, Date, year, month, day, sep = '_')
+```
+
+Next let`s get rid of empty samples from with NAs in dataframe(ends of  the months and end of the measurments)
+
+```{r}
+tidy <- na.omit(tidy)
+```
+
+Next format columns
+
+```{r}
+tidy$PrecipitationIn <- as.numeric(tidy$PrecipitationIn, na.string='T')
+```
+
+Make columns with numbers numeric
+
+```{r}
+tidy[,c(2,4:23)] <- lapply(tidy[,c(2,4:23)], as.numeric)
+```
+
+Once again look at the data:
+
+```{r}
+row.names(tidy) <- 1:nrow(tidy)
+summary(tidy)
+```
+
+Make Events column factor
+
+```{r}
+tidy$Events <- as.factor(tidy$Events)
+levels(tidy$Events)[1] <- "Common"
+```
+
+Lets look at plots of numeric columns
+
+```{r}
+boxplot(tidy[, c(2, 3:23)])
+boxplot(tidy[, c(2, 3:22)])
+```
+
+We saw that Humidity has terrible outlier 1000% we think that this extra "0" at the end.
+
+```{r}
+tidy[135,6] <- 100
+```
+
+Thats all.
+
+```{r}
+head(raw)
+head(tidy)
+```
+
+
+
+
+
