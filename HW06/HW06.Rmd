@@ -1,0 +1,77 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(gapminder)
+library(ggplot2)
+library(datasets)
+library(dplyr)
+library(Cairo)
+```
+
+```{r}
+df1 <- iris %>%
+  transmute(Species, Part = 'sepal', Length = Sepal.Length, Width = Sepal.Width, id = as.numeric(row.names(iris)))
+df2 <- iris %>%
+  transmute(Species, Part = 'petal', Length = Petal.Length, Width = Petal.Width, id =  as.numeric(row.names(iris)))
+iris_long <- bind_rows(df1, df2) %>%
+  arrange(id)
+iris_long$id <- NULL
+```
+
+```{r}
+ggplot(iris_long, aes(x = Length, y = Width, color = Part)) +
+  geom_point(shape = 20)
+```
+```{r}
+ggplot(iris_long, aes(x = Length, y = Width, fill = Part, size = Length + Width)) +
+  geom_point(shape = 21) +
+  facet_grid(Species ~ .) +
+  theme_dark()
+```
+```{r}
+df <- gapminder %>%
+  filter(year == 2007)
+```
+
+```{r}
+CairoWin()
+ggplot(df, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  geom_point() + 
+  scale_x_log10(breaks = c(1000, 10000))
+```
+```{r}
+df <- gapminder %>%
+  group_by(year, continent) %>%
+  summarize(meanLifeExp = mean(lifeExp), totalPop = sum(pop) / 1000000)
+df
+```
+
+```{r}
+ggplot(df, aes(x = year, color = continent)) +
+  geom_point(aes(y = meanLifeExp)) +
+  geom_line(aes(y = meanLifeExp)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 85)) +
+  scale_x_continuous(breaks = seq(1952, 2007, by = 5))
+```
+```{r}
+ggplot(df, aes(x = year, color = continent)) +
+  geom_point(aes(y = totalPop)) +
+  geom_line(aes(y = totalPop)) +
+  scale_y_log10(expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(1952, 2007, by = 5))
+```
+```{r}
+gapminder %>%
+  filter(continent == "Africa", year == 2007) %>%
+  ggplot(aes(x = country, y = gdpPercap,  fill = country)) +
+    geom_bar(stat = "Identity") +
+    guides(fill=FALSE) +
+    theme_dark() +
+    theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust = 0.3))
+```
+
+
