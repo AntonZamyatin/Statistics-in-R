@@ -1,0 +1,12 @@
+name: test
+title: test
+username:
+account: azamyatin
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 968594
+bundleId: 2135214
+url: https://azamyatin.shinyapps.io/test/
+when: 1559819432.25638
+asMultiple: FALSE
+asStatic: FALSE

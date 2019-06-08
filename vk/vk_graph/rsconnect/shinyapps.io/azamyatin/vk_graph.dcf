@@ -1,0 +1,13 @@
+name: vk_graph
+title: vk_graph
+username:
+account: azamyatin
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 969128
+bundleId: 2136964
+url: https://azamyatin.shinyapps.io/vk_graph/
+when: 1559879085.11418
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: _bootswatch.scss|_variables.scss|bootstrap.css|bootstrap.min.css|out.json

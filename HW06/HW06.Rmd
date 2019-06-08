@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 
@@ -9,7 +11,7 @@ library(gapminder)
 library(ggplot2)
 library(datasets)
 library(dplyr)
-library(Cairo)
+#library(Cairo)
 ```
 
 ```{r}
@@ -38,7 +40,7 @@ df <- gapminder %>%
 ```
 
 ```{r}
-CairoWin()
+#CairoWin()
 ggplot(df, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
   geom_point() + 
   scale_x_log10(breaks = c(1000, 10000))

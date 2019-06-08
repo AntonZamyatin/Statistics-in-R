@@ -2,6 +2,7 @@ library(dplyr)
 
 
 foo <- function(df, row_selection, column_selection){
+  
   process_column <- function(input_vec){
     if (is.numeric(input_vec)){
       return(sum(input_vec))
@@ -9,6 +10,7 @@ foo <- function(df, row_selection, column_selection){
       return(summary(factor(input_vec)))
     }
   }
+  
   if (!is.character(column_selection)){
     columns <- colnames(df)[column_selection]
   } else {
@@ -16,8 +18,8 @@ foo <- function(df, row_selection, column_selection){
   }
 
   df <- df %>%
-    select(columns)
-  df <- df[row_selection, ]
+    select(columns) %>%
+    filter(row_selection)
   
   return(list(df, lapply(df, process_column)))
 }

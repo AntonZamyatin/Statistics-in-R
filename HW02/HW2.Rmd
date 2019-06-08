@@ -45,7 +45,7 @@ Apply it in a few examples:
 
 ```{r}
 library("datasets")
-df <- mtcars
+df <- iris
 l <- subset_df(df, c(1,2,3), c(T, F))
 l[[1]]
 l[[2]]

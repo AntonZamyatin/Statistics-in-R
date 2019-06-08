@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+load("CHIS2009_reduced_2.Rdata")
+```
+
+
+```{r}
+df <- adult %>%
+  mutate(age_group = SRAGE_P %/% 10)
+
+ggplot(df, aes(x = factor(age_group), y = BMI_P)) +
+  geom_boxplot(outlier.color = "red", outlier.shape = "*", outlier.size =3, width = 0.2) +
+  ggtitle("Age group vs BMI_P")
+```
+```{r}
+ggplot(df, aes(x = RBMI)) +
+  geom_bar() +
+  ggtitle("BMIgroups")
+```
+
+```{r}
+ggplot(df, aes(x = SRAGE_P, fill= factor(RBMI))) +
+  geom_histogram(bins = length(levels(factor(df$SRAGE_P))))
+  # stat_bin(bins = length(levels(factor(df$SRAGE_P))))
+```
+```{r}
+df <- df %>%
+  filter(SRAGE_P < 85) %>%
+  filter(BMI_P >= 16 && BMI_P <= 52)
+df$RACEHPR2 <- factor(df$RACEHPR2, labels = c("Latino", "Asian", "African American", "White"))
+df$RBMI <- factor(df$RBMI, labels = c("Under", "Normal", "Over", "Obese")) 
+```
+
+
+```{r}
+ggplot(df, aes(x = SRAGE_P, fill= factor(RBMI))) +
+  geom_histogram(bins = length(levels(factor(df$SRAGE_P)))) +
+  facet_grid(rows = vars(RBMI)) +
+  scale_fill_brewer("BMI group", palette = "Reds") +
+  theme_classic() +
+  theme(strip.text.y = element_blank())
+```
+```{r}
+ggplot(df, aes(x = SRAGE_P, fill= factor(RBMI))) +
+  geom_histogram(color = "white", position = "fill", bins = length(levels(factor(df$SRAGE_P)))) +
+  scale_fill_brewer("BMI group", palette = "Reds") +
+  theme_classic() +
+  scale_y_continuous(name = "percentage") +
+  theme(strip.text.y = element_blank())
+```
+
